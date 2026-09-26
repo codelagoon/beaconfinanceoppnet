@@ -58,35 +58,21 @@ img {
 .brand {
   display: flex;
   align-items: center;
-  gap: 12px;
   color: white;
   background: none;
   border: 0;
   padding: 0;
   text-align: left;
 }
-.brand span {
-  display: flex;
-  flex-direction: column;
-  letter-spacing: 0.16em;
-  line-height: 1;
+.brand-logo {
+  display: block;
+  width: 148px;
+  height: auto;
+  object-fit: contain;
 }
-.brand b {
-  font-size: 14px;
-}
-.brand small {
-  font-size: 8px;
-  opacity: 0.65;
-  margin-top: 4px;
-}
-.bull {
-  width: 37px;
-  height: 29px;
-  fill: none;
-  stroke: #b69a61;
-  stroke-width: 1.65;
-  stroke-linecap: round;
-  stroke-linejoin: round;
+.brand-logo.compact {
+  width: 44px;
+  object-position: left center;
 }
 .topbar nav {
   justify-self: center;

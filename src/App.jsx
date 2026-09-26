@@ -350,16 +350,11 @@ function Brand({ compact = false, onClick }) {
       aria-label="Beacon Finance home"
       onClick={onClick}
     >
-      <svg className="bull" viewBox="0 0 46 32" aria-hidden="true">
-        <path d="M7 7c5 0 9 2 11 6M39 7c-5 0-9 2-11 6M7 7 3 2M39 7l4-5M16 12c2-3 12-3 14 0 2 3 1 12-2 15-3 3-7 3-10 0-3-3-4-12-2-15Z" />
-        <path d="M18 20c3 2 7 2 10 0" />
-      </svg>
-      {!compact && (
-        <span>
-          <b>BEACON</b>
-          <small>FINANCE</small>
-        </span>
-      )}
+      <img
+        className={`brand-logo ${compact ? "compact" : ""}`}
+        src="/brand/beacon-finance-logo.png"
+        alt="Beacon Finance"
+      />
     </button>
   );
 }
