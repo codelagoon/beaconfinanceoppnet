@@ -20,6 +20,9 @@ const opportunities = [
     time: '3–5 hrs / week',
     duration: '10 weeks',
     difficulty: 'Competitive',
+    format: 'Remote',
+    applicationType: 'Team',
+    deadlineDate: '2026-09-30',
     blurb: 'Build and defend an investment strategy with a team using a real-world case and institutional-grade analysis.',
     why: 'A rare mix of markets, teamwork, and persuasive communication—with a globally recognized final round.',
     image: 'https://www.smeal.psu.edu/traderoom/images/TradingRoom_015.jpg/@@images/image.jpeg',
@@ -43,6 +46,9 @@ const opportunities = [
     time: '35 hrs / week',
     duration: '8 weeks',
     difficulty: 'Highly competitive',
+    format: 'In person',
+    applicationType: 'Individual',
+    deadlineDate: '2026-10-14',
     blurb: 'A paid summer placement with a local nonprofit plus a national leadership summit in Washington, D.C.',
     why: 'Substantive local work and a selective national network make this much more than a résumé line.',
     image: 'https://resources.finalsite.net/images/f_auto%2Cq_auto%2Ct_image_size_2/v1764086245/ccsk12inus/ewbz8bbnerupu2pjkzu3/AaronandVaradatStateFarm1.jpg',
@@ -66,6 +72,9 @@ const opportunities = [
     time: 'Full time',
     duration: '4 weeks',
     difficulty: 'Competitive',
+    format: 'Remote',
+    applicationType: 'Individual',
+    deadlineDate: '2026-10-28',
     blurb: 'Launch a real venture with ambitious peers through customer research, prototyping, and structured mentorship.',
     why: 'Excellent for students who want to test whether they actually enjoy building—not just studying—businesses.',
     image: 'https://www.temple.edu/sites/www/files/media/image/20180828_160_90_Fox_012.jpg',
@@ -89,6 +98,9 @@ const opportunities = [
     time: '2 hrs / week',
     duration: '6 weeks',
     difficulty: 'Moderate',
+    format: 'Remote',
+    applicationType: 'Team',
+    deadlineDate: '2026-11-03',
     blurb: 'Manage a simulated portfolio and respond to market-moving news in a fast-paced team competition.',
     why: 'A strong, accessible first signal of serious interest in markets and portfolio thinking.',
     image: 'https://www.iona.edu/sites/default/files/styles/scale/public/2025-08/ancillary-images/students-trading-floor.jpg?itok=DG3GmheJ',
@@ -112,6 +124,9 @@ const opportunities = [
     time: '20 hrs / week',
     duration: '7 weeks',
     difficulty: 'Highly competitive',
+    format: 'In person',
+    applicationType: 'Individual',
+    deadlineDate: '2026-11-18',
     blurb: 'Join a faculty-led research group and present an original project at a closing symposium.',
     why: 'Real mentorship, defined outputs, and exposure to the pace and ambiguity of university research.',
     image: 'https://umdearborn.edu/sites/default/files/2023-09/UMD-FanLab-Jun23%2826%29-a.jpeg',
@@ -155,6 +170,33 @@ function normalizeSearch(value) {
   return value.toLowerCase().normalize('NFKD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-z0-9]+/g, ' ').trim()
 }
 
+const emptyFilters = {Category: [], 'Grade level': [], Compensation: [], Format: [], Deadline: [], 'Time commitment': [], 'Application type': []}
+
+function matchesFilters(item, filters) {
+  if (filters.Category.length && !filters.Category.includes(item.category)) return false
+  if (filters['Grade level'].length) {
+    const [min, max = min] = item.grades.split('–').map(Number)
+    if (!filters['Grade level'].some(grade => Number(grade.replace(/\D/g, '')) >= min && Number(grade.replace(/\D/g, '')) <= max)) return false
+  }
+  if (filters.Compensation.length) {
+    const compensation = item.paid === 'Paid' ? 'Paid' : item.paid === 'Unpaid' ? 'Unpaid' : 'Stipend / award'
+    if (!filters.Compensation.includes(compensation)) return false
+  }
+  if (filters.Format.length && !filters.Format.includes(item.format)) return false
+  if (filters['Application type'].length && !filters['Application type'].includes(item.applicationType)) return false
+  if (filters.Deadline.length) {
+    const days = Math.ceil((new Date(`${item.deadlineDate}T23:59:59`) - new Date('2026-09-26T00:00:00')) / 86400000)
+    const deadlineMatch = filters.Deadline.some(value => value === 'Next 7 days' ? days >= 0 && days <= 7 : value === 'Next 30 days' ? days >= 0 && days <= 30 : days >= 0 && days <= 120)
+    if (!deadlineMatch) return false
+  }
+  if (filters['Time commitment'].length) {
+    const hours = Number(item.time.match(/\d+/)?.[0] || 40)
+    const timeMatch = filters['Time commitment'].some(value => value === 'Under 5 hrs / week' ? hours < 5 : value === '5–15 hrs / week' ? hours >= 5 && hours <= 15 : item.time === 'Full time' || hours > 15)
+    if (!timeMatch) return false
+  }
+  return true
+}
+
 function Brand({ compact = false, onClick }) {
   return <button className="brand" aria-label="Beacon Finance home" onClick={onClick}>
     <svg className="bull" viewBox="0 0 46 32" aria-hidden="true">
@@ -181,13 +223,16 @@ function App() {
   const [filtersOpen, setFiltersOpen] = useState(false)
   const [searchOpen, setSearchOpen] = useState(false)
   const [query, setQuery] = useState('')
-  const [activeCategory, setActiveCategory] = usePersistentState('category', 'All opportunities')
+  const [filters, setFilters] = usePersistentState('filters', emptyFilters)
   const [mobileOpen, setMobileOpen] = useState(false)
   const [statuses, setStatuses] = usePersistentState('application-statuses', {})
   const [notes, setNotes] = usePersistentState('notes', {})
   const [actionHistory, setActionHistory] = useState([])
   const [reviewed, setReviewed] = usePersistentState('reviewed-count', 0)
 
+  const filteredOpportunities = useMemo(() => opportunities.filter(item => matchesFilters(item, filters)), [filters])
+  const activeCategory = filters.Category.length === 1 ? filters.Category[0] : 'All opportunities'
+  const activeFilterCount = Object.values(filters).reduce((total, values) => total + values.length, 0)
   const item = opportunities[current % opportunities.length]
   const visible = useMemo(() => {
     const terms = normalizeSearch(query).split(' ').filter(Boolean)
@@ -220,6 +265,11 @@ function App() {
   const goBack = () => window.history.state?.fromBeacon ? window.history.back() : go('discover', undefined, true)
   const toggleSaved = id => setSaved(s => s.includes(id) ? s.filter(x => x !== id) : [...s, id])
   const toggleCompare = id => setCompare(s => s.includes(id) ? s.filter(x => x !== id) : s.length < 4 ? [...s, id] : s)
+  const setCategory = category => {
+    setFilters(currentFilters => ({...currentFilters, Category: category === 'All opportunities' ? [] : [category]}))
+    setCurrent(0)
+  }
+  const clearFilters = () => { setFilters(emptyFilters); setCurrent(0) }
   const actOnOpportunity = (kind, id) => {
     setActionHistory(h => [...h.slice(-4), { kind, id, current, saved, compare, reviewed }])
     if (kind === 'save') setSaved(s => s.includes(id) ? s : [...s, id])
@@ -243,7 +293,7 @@ function App() {
       <nav className={mobileOpen ? 'mobile-open' : ''}>
         <button className={page === 'discover' ? 'active' : ''} onClick={() => go('discover')}>Opportunities</button>
         <button onClick={() => { setSearchOpen(true); setMobileOpen(false) }}><Search size={17}/> Search</button>
-        <button onClick={() => { setFiltersOpen(true); setMobileOpen(false) }}><SlidersHorizontal size={17}/> Filters</button>
+        <button onClick={() => { setFiltersOpen(true); setMobileOpen(false) }}><SlidersHorizontal size={17}/> Filters {activeFilterCount > 0 && <span className="count">{activeFilterCount}</span>}</button>
         <button className={page === 'saved' ? 'active' : ''} onClick={() => go('saved')}>Saved <span className="count">{saved.length}</span></button>
       </nav>
       <div className="profile"><span>GK</span><ChevronDown size={14}/></div>
@@ -254,17 +304,17 @@ function App() {
       <Columns3 size={17}/><span>Compare shortlist</span><b>{compare.length}</b><ArrowRight size={16}/>
     </button>}
 
-    {page === 'discover' && <Discovery item={item} current={current} saved={saved} compare={compare} reviewed={reviewed} lastAction={actionHistory.at(-1)} onAction={actOnOpportunity} onUndo={undoLastAction} onView={id => go('detail', id)} onCategory={setActiveCategory} activeCategory={activeCategory} />}
+    {page === 'discover' && <Discovery item={filteredOpportunities.length ? filteredOpportunities[current % filteredOpportunities.length] : null} current={current} saved={saved} compare={compare} reviewed={reviewed} lastAction={actionHistory.at(-1)} onAction={actOnOpportunity} onUndo={undoLastAction} onView={id => go('detail', id)} onCategory={setCategory} activeCategory={activeCategory} activeFilterCount={activeFilterCount} onClearFilters={clearFilters} />}
     {page === 'detail' && <Detail item={item} saved={saved} onBack={goBack} onSave={toggleSaved} onCompare={toggleCompare} onView={id => go('detail', id)} />}
     {page === 'saved' && <SavedPage items={opportunities.filter(o => saved.includes(o.id))} statuses={statuses} setStatuses={setStatuses} notes={notes} setNotes={setNotes} onView={id => go('detail', id)} onCompare={toggleCompare} />}
     {page === 'compare' && <ComparePage items={opportunities.filter(o => compare.includes(o.id))} onRemove={toggleCompare} onBack={() => go('discover')} onView={id => go('detail', id)} />}
 
-    {searchOpen && <SearchOverlay query={query} setQuery={setQuery} results={visible} onClose={() => setSearchOpen(false)} onBrowseAll={() => {setQuery(''); setActiveCategory('All opportunities'); setSearchOpen(false); go('discover')}} onView={id => {setSearchOpen(false); go('detail', id)}} />}
-    {filtersOpen && <FilterPanel active={activeCategory} setActive={setActiveCategory} onClose={() => setFiltersOpen(false)} />}
+    {searchOpen && <SearchOverlay query={query} setQuery={setQuery} results={visible} onClose={() => setSearchOpen(false)} onBrowseAll={() => {setQuery(''); clearFilters(); setSearchOpen(false); go('discover')}} onView={id => {setSearchOpen(false); go('detail', id)}} />}
+    {filtersOpen && <FilterPanel filters={filters} setFilters={setFilters} resultCount={filteredOpportunities.length} onClear={clearFilters} onClose={() => setFiltersOpen(false)} />}
   </div>
 }
 
-function Discovery({ item, current, saved, compare, reviewed, lastAction, onAction, onUndo, onView, onCategory, activeCategory }) {
+function Discovery({ item, current, saved, compare, reviewed, lastAction, onAction, onUndo, onView, onCategory, activeCategory, activeFilterCount, onClearFilters }) {
   const start = useRef(null)
   const [drag, setDrag] = useState({x: 0, y: 0, active: false, exiting: false})
   const commit = kind => {
@@ -321,6 +371,7 @@ function Discovery({ item, current, saved, compare, reviewed, lastAction, onActi
         <div className="deck-progress"><span>{reviewed >= opportunities.length ? <><b>Deck complete</b> · reviewed today</> : <><b>{opportunities.length - reviewed}</b> new opportunities remaining</>}</span><div><i style={{width: `${(reviewed / opportunities.length) * 100}%`}} /></div></div>
         <button className="undo-action" onClick={onUndo} disabled={!lastAction}><RotateCcw/> Undo{lastAction ? ` ${lastAction.kind}` : ''}</button>
       </div>
+      {!item ? <div className="empty-state deck-empty"><SlidersHorizontal/><h2>No opportunities match</h2><p>Your filters are working, but this combination is too narrow. Clear them to return to the full deck.</p><button className="primary-action" onClick={onClearFilters}>Clear {activeFilterCount} {activeFilterCount === 1 ? 'filter' : 'filters'}</button></div> : <>
       <div className="deck-stage">
         <div className="deck-sheet deck-sheet-two" aria-hidden="true" />
         <div className="deck-sheet deck-sheet-one" aria-hidden="true" />
@@ -367,6 +418,7 @@ function Discovery({ item, current, saved, compare, reviewed, lastAction, onActi
         <span><ArrowUp/> Swipe up <b>Compare</b></span>
         <small>{item.added} · Verified Sep 24</small>
       </div>
+      </>}
     </section>
 
     <section className="signal-band">
@@ -466,17 +518,18 @@ function SearchOverlay({ query, setQuery, results, onClose, onBrowseAll, onView 
   </div></div>
 }
 
-function FilterPanel({ active, setActive, onClose }) {
+function FilterPanel({ filters, setFilters, resultCount, onClear, onClose }) {
   const groups = [
     ['Category',['Internship','Competition','Research','Summer Program']],
     ['Grade level',['9th','10th','11th','12th']],
     ['Compensation',['Paid','Unpaid','Stipend / award']],
-    ['Format',['Remote','In person','Hybrid']],
+    ['Format',['Remote','In person']],
     ['Deadline',['Next 7 days','Next 30 days','This semester']],
     ['Time commitment',['Under 5 hrs / week','5–15 hrs / week','Full time']],
-    ['Application type',['Individual','Team','Nomination required']]
+    ['Application type',['Individual','Team']]
   ]
-  return <div className="filter-overlay" onMouseDown={e=>e.target===e.currentTarget&&onClose()}><aside className="filter-panel"><header><div><p>REFINE RESULTS</p><h2>Filters</h2></div><button onClick={onClose}><X/></button></header><div className="filter-groups">{groups.map(([title, opts])=><fieldset key={title}><legend>{title}</legend>{opts.map(opt=><label key={opt}><input type="checkbox" checked={title==='Category'&&active===opt} onChange={()=>title==='Category'&&setActive(active===opt?'All opportunities':opt)}/><span>{opt}</span></label>)}</fieldset>)}</div><footer><button onClick={()=>setActive('All opportunities')}>Clear all</button><button className="primary-action" onClick={onClose}>Show 86 opportunities</button></footer></aside></div>
+  const toggle = (group, option) => setFilters(current => ({...current, [group]: current[group].includes(option) ? current[group].filter(value => value !== option) : [...current[group], option]}))
+  return <div className="filter-overlay" onMouseDown={e=>e.target===e.currentTarget&&onClose()}><aside className="filter-panel" role="dialog" aria-modal="true" aria-label="Filter opportunities"><header><div><p>REFINE RESULTS</p><h2>Filters</h2></div><button aria-label="Close filters" onClick={onClose}><X/></button></header><div className="filter-groups">{groups.map(([title, opts])=><fieldset key={title}><legend>{title}</legend>{opts.map(opt=><label key={opt}><input type="checkbox" checked={filters[title].includes(opt)} onChange={()=>toggle(title,opt)}/><span>{opt}</span></label>)}</fieldset>)}</div><footer><button onClick={onClear} disabled={Object.values(filters).every(values => values.length === 0)}>Clear all</button><button className="primary-action" onClick={onClose}>Show {resultCount} {resultCount === 1 ? 'opportunity' : 'opportunities'}</button></footer></aside></div>
 }
 
 export default App
