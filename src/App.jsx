@@ -306,7 +306,7 @@ function App() {
 
     {page === 'discover' && <Discovery item={filteredOpportunities.length ? filteredOpportunities[current % filteredOpportunities.length] : null} current={current} saved={saved} compare={compare} reviewed={reviewed} lastAction={actionHistory.at(-1)} onAction={actOnOpportunity} onUndo={undoLastAction} onView={id => go('detail', id)} onCategory={setCategory} activeCategory={activeCategory} activeFilterCount={activeFilterCount} onClearFilters={clearFilters} />}
     {page === 'detail' && <Detail item={item} saved={saved} onBack={goBack} onSave={toggleSaved} onCompare={toggleCompare} onView={id => go('detail', id)} />}
-    {page === 'saved' && <SavedPage items={opportunities.filter(o => saved.includes(o.id))} statuses={statuses} setStatuses={setStatuses} notes={notes} setNotes={setNotes} onView={id => go('detail', id)} onCompare={toggleCompare} />}
+    {page === 'saved' && <SavedPage items={saved.map(id => opportunities.find(o => o.id === id)).filter(Boolean)} compare={compare} statuses={statuses} setStatuses={setStatuses} notes={notes} setNotes={setNotes} onView={id => go('detail', id)} onCompare={toggleCompare} onUnsave={toggleSaved} onBrowse={() => go('discover')} />}
     {page === 'compare' && <ComparePage items={opportunities.filter(o => compare.includes(o.id))} onRemove={toggleCompare} onBack={() => go('discover')} onView={id => go('detail', id)} />}
 
     {searchOpen && <SearchOverlay query={query} setQuery={setQuery} results={visible} onClose={() => setSearchOpen(false)} onBrowseAll={() => {setQuery(''); clearFilters(); setSearchOpen(false); go('discover')}} onView={id => {setSearchOpen(false); go('detail', id)}} />}
@@ -476,18 +476,23 @@ function Detail({ item, saved, onBack, onSave, onCompare, onView }) {
   </main>
 }
 
-function SavedPage({ items, statuses, setStatuses, notes, setNotes, onView, onCompare }) {
+function SavedPage({ items, compare, statuses, setStatuses, notes, setNotes, onView, onCompare, onUnsave, onBrowse }) {
   const [sort, setSort] = useState('Deadline')
+  const sortedItems = useMemo(() => [...items].sort((a, b) => {
+    if (sort === 'Organization') return a.org.localeCompare(b.org)
+    if (sort === 'Recently saved') return items.indexOf(b) - items.indexOf(a)
+    return new Date(a.deadlineDate) - new Date(b.deadlineDate)
+  }), [items, sort])
   return <main className="saved-page">
     <section className="page-intro"><p className="eyebrow">YOUR SHORTLIST</p><h1>Saved opportunities</h1><p>Keep the good ones close. Track decisions, deadlines, and what needs to happen next.</p></section>
     <div className="list-toolbar"><span>{items.length} opportunities</span><label>Sort by <select value={sort} onChange={e=>setSort(e.target.value)}><option>Deadline</option><option>Recently saved</option><option>Organization</option></select></label></div>
-    <div className="saved-list">{items.map(item => <article className="saved-item" key={item.id}>
+    {items.length === 0 ? <div className="empty-state"><Bookmark/><h2>No saved opportunities yet</h2><p>Save the opportunities worth a second look. They’ll stay here with your status and private notes.</p><button className="primary-action" onClick={onBrowse}>Browse opportunities <ArrowRight/></button></div> : <div className="saved-list">{sortedItems.map(item => <article className="saved-item" key={item.id}>
       <img src={item.image} alt=""/>
-      <div className="saved-main"><p>{item.category} · {item.org}</p><h2 onClick={()=>onView(item.id)}>{item.title}</h2><span><CalendarDays/> {item.deadlineLong} <MapPin/> {item.location}</span></div>
+      <div className="saved-main"><p>{item.category} · {item.org}</p><button className="saved-title" onClick={()=>onView(item.id)}>{item.title}</button><span><CalendarDays/> {item.deadlineLong} <MapPin/> {item.location}</span></div>
       <div className="status-control"><small>STATUS</small><select value={statuses[item.id] || 'Saved'} onChange={e=>setStatuses(s=>({...s,[item.id]:e.target.value}))}><option>Saved</option><option>Applying</option><option>Applied</option><option>Closed</option></select></div>
       <textarea aria-label={`Notes for ${item.title}`} value={notes[item.id] || ''} onChange={e => setNotes(n => ({...n, [item.id]: e.target.value}))} placeholder="Add a private note…" />
-      <button className="icon-button" onClick={() => onCompare(item.id)}><Columns3/></button>
-    </article>)}</div>
+      <div className="saved-actions"><button className={compare.includes(item.id) ? 'icon-button selected' : 'icon-button'} aria-label={compare.includes(item.id) ? 'Remove from comparison' : 'Add to comparison'} onClick={() => onCompare(item.id)}><Columns3/></button><button className="icon-button" aria-label={`Remove ${item.title} from saved opportunities`} onClick={() => onUnsave(item.id)}><BookmarkCheck/></button></div>
+    </article>)}</div>}
   </main>
 }
 
