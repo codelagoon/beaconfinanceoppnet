@@ -5,6 +5,7 @@ import {
   ArrowUp,
   Bookmark,
   BookmarkCheck,
+  BookOpen,
   BriefcaseBusiness,
   CalendarDays,
   Check,
@@ -25,6 +26,7 @@ import {
   Zap,
 } from "lucide-react";
 import { opportunities } from "./opportunities.generated.js";
+import { financeResources, resourceCategories } from "./resources.js";
 
 const legacyOpportunities = [
   {
@@ -267,7 +269,8 @@ function routeFromHash() {
   const hash = window.location.hash.replace("#", "");
   if (hash.startsWith("opportunity-"))
     return { page: "detail", id: Number(hash.replace("opportunity-", "")) };
-  if (["saved", "compare", "discover"].includes(hash)) return { page: hash };
+  if (["saved", "compare", "discover", "resources"].includes(hash))
+    return { page: hash };
   return { page: "discover" };
 }
 
@@ -444,6 +447,13 @@ function App() {
     return () => window.removeEventListener("popstate", handleBack);
   }, []);
 
+  useEffect(() => {
+    document.title =
+      page === "resources"
+        ? "Free Finance Resources — Beacon Finance"
+        : "Beacon Finance — Opportunities";
+  }, [page]);
+
   const go = (next, id, replace = false) => {
     if (id) setDetailId(id);
     const hash = next === "detail" ? `#opportunity-${id}` : `#${next}`;
@@ -518,24 +528,34 @@ function App() {
             Opportunities
           </button>
           <button
-            onClick={() => {
-              setSearchOpen(true);
-              setMobileOpen(false);
-            }}
+            className={page === "resources" ? "active" : ""}
+            onClick={() => go("resources")}
           >
-            <Search size={17} /> Search
+            Resources
           </button>
-          <button
-            onClick={() => {
-              setFiltersOpen(true);
-              setMobileOpen(false);
-            }}
-          >
-            <SlidersHorizontal size={17} /> Filters{" "}
-            {activeFilterCount > 0 && (
-              <span className="count">{activeFilterCount}</span>
-            )}
-          </button>
+          {page !== "resources" && (
+            <>
+              <button
+                onClick={() => {
+                  setSearchOpen(true);
+                  setMobileOpen(false);
+                }}
+              >
+                <Search size={17} /> Search
+              </button>
+              <button
+                onClick={() => {
+                  setFiltersOpen(true);
+                  setMobileOpen(false);
+                }}
+              >
+                <SlidersHorizontal size={17} /> Filters{" "}
+                {activeFilterCount > 0 && (
+                  <span className="count">{activeFilterCount}</span>
+                )}
+              </button>
+            </>
+          )}
           <button
             className={page === "saved" ? "active" : ""}
             onClick={() => go("saved")}
@@ -653,6 +673,7 @@ function App() {
           onView={(id) => go("detail", id)}
         />
       )}
+      {page === "resources" && <ResourceLibrary />}
 
       {searchOpen && (
         <SearchOverlay
@@ -1498,6 +1519,236 @@ function ComparePage({ items, onRemove, onBack, onView }) {
           + Add another opportunity
         </button>
       )}
+    </main>
+  );
+}
+
+function ResourceLibrary() {
+  const [query, setQuery] = useState("");
+  const [category, setCategory] = useState("All resources");
+  const [level, setLevel] = useState("All levels");
+  const filtered = useMemo(() => {
+    const terms = normalizeSearch(query).split(" ").filter(Boolean);
+    return financeResources.filter((resource) => {
+      if (category !== "All resources" && resource.category !== category)
+        return false;
+      if (
+        level !== "All levels" &&
+        resource.level !== level &&
+        resource.level !== "All levels"
+      )
+        return false;
+      const haystack = normalizeSearch(
+        `${resource.title} ${resource.provider} ${resource.category} ${resource.type} ${resource.description}`,
+      );
+      return terms.every((term) => haystack.includes(term));
+    });
+  }, [category, level, query]);
+  const featured = financeResources.filter((resource) => resource.featured);
+  const paths = [
+    {
+      number: "01",
+      title: "Build the foundation",
+      description: "Money, economics, accounting, and how markets fit together.",
+      category: "Foundations",
+    },
+    {
+      number: "02",
+      title: "Analyze a company",
+      description: "Read filings, understand statements, and build a first valuation.",
+      category: "Valuation",
+    },
+    {
+      number: "03",
+      title: "Follow the markets",
+      description: "Use primary data and credible reporting to form a real view.",
+      category: "Research & Data",
+    },
+    {
+      number: "04",
+      title: "Get career-ready",
+      description: "Practice the work, sharpen your résumé, and test your interests.",
+      category: "Careers",
+    },
+  ];
+
+  return (
+    <main className="resources-page">
+      <section className="resources-hero">
+        <div>
+          <p className="eyebrow">THE BEACON RESOURCE DESK</p>
+          <h1>The finance education<br />school rarely gives you.</h1>
+        </div>
+        <div className="resource-hero-copy">
+          <p>
+            A high-school-first library for learning the fundamentals, reading
+            real markets, building technical skills, and preparing for serious
+            opportunities.
+          </p>
+          <span>
+            <Check size={14} /> {financeResources.length} free resources · 12 skill areas · Curated September 2026
+          </span>
+        </div>
+      </section>
+
+      <section className="resource-search-band" aria-label="Search free resources">
+        <Search aria-hidden="true" />
+        <input
+          value={query}
+          onChange={(event) => setQuery(event.target.value)}
+          placeholder="Search valuation, Excel, economics, careers..."
+          aria-label="Search resources"
+        />
+        {query && <button onClick={() => setQuery("")}>Clear</button>}
+      </section>
+
+      <section className="resource-start">
+        <div className="resource-section-heading">
+          <div>
+            <p className="eyebrow">START HERE</p>
+            <h2>Three resources worth your time first.</h2>
+          </div>
+          <p>
+            The cleanest route from curious beginner to someone who can speak
+            intelligently about finance.
+          </p>
+        </div>
+        <div className="resource-featured-list">
+          {featured.map((resource, index) => (
+            <a
+              href={resource.url}
+              target="_blank"
+              rel="noreferrer"
+              key={resource.id}
+            >
+              <span className="resource-rank">0{index + 1}</span>
+              <div>
+                <small>{resource.provider}</small>
+                <h3>{resource.title}</h3>
+                <p>{resource.description}</p>
+              </div>
+              <span className="resource-feature-meta">
+                {resource.level}<br />{resource.type}
+              </span>
+              <ExternalLink aria-hidden="true" />
+            </a>
+          ))}
+        </div>
+      </section>
+
+      <section className="resource-paths">
+        <p className="eyebrow">GUIDED PATHS</p>
+        <div>
+          {paths.map((path) => (
+            <button
+              key={path.number}
+              onClick={() => {
+                setCategory(path.category);
+                document.querySelector(".resource-catalog")?.scrollIntoView();
+              }}
+            >
+              <span>{path.number}</span>
+              <h3>{path.title}</h3>
+              <p>{path.description}</p>
+              <small>Explore path <ArrowRight /></small>
+            </button>
+          ))}
+        </div>
+      </section>
+
+      <section className="resource-catalog">
+        <header className="resource-catalog-head">
+          <div>
+            <p className="eyebrow">FULL LIBRARY</p>
+            <h2>Free resources, carefully selected.</h2>
+          </div>
+          <label>
+            <span>Level</span>
+            <select value={level} onChange={(event) => setLevel(event.target.value)}>
+              <option>All levels</option>
+              <option>Beginner</option>
+              <option>Intermediate</option>
+              <option>Advanced</option>
+            </select>
+          </label>
+        </header>
+
+        <div className="resource-category-nav" aria-label="Resource categories">
+          {resourceCategories.map((item) => (
+            <button
+              key={item}
+              className={category === item ? "active" : ""}
+              onClick={() => setCategory(item)}
+            >
+              {item}
+              <span>
+                {item === "All resources"
+                  ? financeResources.length
+                  : financeResources.filter((resource) => resource.category === item).length}
+              </span>
+            </button>
+          ))}
+        </div>
+
+        <div className="resource-results-head">
+          <span>{filtered.length} {filtered.length === 1 ? "resource" : "resources"}</span>
+          <span>Every item has a usable free path</span>
+        </div>
+
+        <div className="resource-index">
+          {filtered.map((resource, index) => (
+            <a
+              href={resource.url}
+              target="_blank"
+              rel="noreferrer"
+              className="resource-row"
+              key={resource.id}
+            >
+              <span className="resource-row-number">
+                {String(index + 1).padStart(2, "0")}
+              </span>
+              <div className="resource-monogram" aria-hidden="true">
+                {resource.provider
+                  .split(/\s+/)
+                  .filter((word) => !["of", "and", "the"].includes(word.toLowerCase()))
+                  .slice(0, 2)
+                  .map((word) => word[0])
+                  .join("")}
+              </div>
+              <div className="resource-row-main">
+                <span>{resource.provider}</span>
+                <h3>{resource.title}</h3>
+                <p>{resource.description}</p>
+              </div>
+              <div className="resource-row-meta">
+                <span>{resource.category}</span>
+                <span>{resource.type}</span>
+                <span>{resource.level}</span>
+              </div>
+              <div className="resource-access">
+                <Check /> {resource.access}
+              </div>
+              <ExternalLink className="resource-open" aria-hidden="true" />
+            </a>
+          ))}
+          {filtered.length === 0 && (
+            <div className="resource-empty">
+              <BookOpen />
+              <h3>No exact match</h3>
+              <p>Try a broader search or return to the full library.</p>
+              <button
+                onClick={() => {
+                  setQuery("");
+                  setCategory("All resources");
+                  setLevel("All levels");
+                }}
+              >
+                Reset library
+              </button>
+            </div>
+          )}
+        </div>
+      </section>
     </main>
   );
 }
