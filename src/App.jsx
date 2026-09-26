@@ -25,7 +25,9 @@ const opportunities = [
     image: 'https://www.smeal.psu.edu/traderoom/images/TradingRoom_015.jpg/@@images/image.jpeg',
     logo: 'https://upload.wikimedia.org/wikipedia/en/thumb/4/41/University_of_Pennsylvania_shield.svg/240px-University_of_Pennsylvania_shield.svg.png',
     impact: 'High impact',
-    added: 'Added 2 days ago'
+    added: 'Added 2 days ago',
+    applyUrl: 'https://globalyouth.wharton.upenn.edu/investment-competition/',
+    sourceUrl: 'https://globalyouth.wharton.upenn.edu/investment-competition/'
   },
   {
     id: 2,
@@ -46,16 +48,18 @@ const opportunities = [
     image: 'https://resources.finalsite.net/images/f_auto%2Cq_auto%2Ct_image_size_2/v1764086245/ccsk12inus/ewbz8bbnerupu2pjkzu3/AaronandVaradatStateFarm1.jpg',
     logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/2/20/Bank_of_America_logo.svg/512px-Bank_of_America_logo.svg.png',
     impact: 'High impact',
-    added: 'Added this week'
+    added: 'Added this week',
+    applyUrl: 'https://about.bankofamerica.com/en/making-an-impact/student-leaders',
+    sourceUrl: 'https://about.bankofamerica.com/en/making-an-impact/student-leaders'
   },
   {
     id: 3,
-    org: 'MIT',
-    shortOrg: 'MIT',
+    org: 'LaunchX',
+    shortOrg: 'LAUNCHX',
     title: 'LaunchX Entrepreneurship Program',
     category: 'Summer Program',
     paid: 'Unpaid',
-    location: 'Cambridge, MA',
+    location: 'Remote',
     grades: '10–12',
     deadline: 'Oct 28',
     deadlineLong: 'October 28, 2026',
@@ -65,9 +69,11 @@ const opportunities = [
     blurb: 'Launch a real venture with ambitious peers through customer research, prototyping, and structured mentorship.',
     why: 'Excellent for students who want to test whether they actually enjoy building—not just studying—businesses.',
     image: 'https://www.temple.edu/sites/www/files/media/image/20180828_160_90_Fox_012.jpg',
-    logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/0/0c/MIT_logo.svg/320px-MIT_logo.svg.png',
+    logo: '',
     impact: 'Featured',
-    added: 'Added yesterday'
+    added: 'Added yesterday',
+    applyUrl: 'https://www.launchx.com/programs/online-entrepreneurship',
+    sourceUrl: 'https://www.launchx.com/programs/online-entrepreneurship'
   },
   {
     id: 4,
@@ -88,7 +94,9 @@ const opportunities = [
     image: 'https://www.iona.edu/sites/default/files/styles/scale/public/2025-08/ancillary-images/students-trading-floor.jpg?itok=DG3GmheJ',
     logo: '',
     impact: 'Recently added',
-    added: 'Added today'
+    added: 'Added today',
+    applyUrl: 'https://jausa.ja.org/programs/ja-stock-market-challenge',
+    sourceUrl: 'https://jausa.ja.org/programs/ja-stock-market-challenge'
   },
   {
     id: 5,
@@ -109,7 +117,9 @@ const opportunities = [
     image: 'https://umdearborn.edu/sites/default/files/2023-09/UMD-FanLab-Jun23%2826%29-a.jpeg',
     logo: '',
     impact: 'High impact',
-    added: 'Added 4 days ago'
+    added: 'Added 4 days ago',
+    applyUrl: 'https://umdearborn.edu/academics/research/undergraduate-research',
+    sourceUrl: 'https://umdearborn.edu/academics/research/undergraduate-research'
   }
 ]
 
@@ -191,7 +201,7 @@ function App() {
     </button>}
 
     {page === 'discover' && <Discovery item={item} current={current} saved={saved} compare={compare} reviewed={reviewed} lastAction={actionHistory.at(-1)} onAction={actOnOpportunity} onUndo={undoLastAction} onView={id => go('detail', id)} onCategory={setActiveCategory} activeCategory={activeCategory} />}
-    {page === 'detail' && <Detail item={item} saved={saved} onBack={() => go('discover')} onSave={toggleSaved} onCompare={toggleCompare} />}
+    {page === 'detail' && <Detail item={item} saved={saved} onBack={() => go('discover')} onSave={toggleSaved} onCompare={toggleCompare} onView={id => go('detail', id)} />}
     {page === 'saved' && <SavedPage items={opportunities.filter(o => saved.includes(o.id))} statuses={statuses} setStatuses={setStatuses} onView={id => go('detail', id)} onCompare={toggleCompare} />}
     {page === 'compare' && <ComparePage items={opportunities.filter(o => compare.includes(o.id))} onRemove={toggleCompare} onBack={() => go('discover')} onView={id => go('detail', id)} />}
 
@@ -330,7 +340,7 @@ function OpportunitySection({ number, title, subtitle, items, onView }) {
   </section>
 }
 
-function Detail({ item, saved, onBack, onSave, onCompare }) {
+function Detail({ item, saved, onBack, onSave, onCompare, onView }) {
   return <main className="detail-page">
     <button className="back-link" onClick={onBack}><ArrowLeft/> Back to opportunities</button>
     <section className="detail-hero">
@@ -340,7 +350,7 @@ function Detail({ item, saved, onBack, onSave, onCompare }) {
         <p className="eyebrow">{item.category} · {item.impact}</p>
         <h1>{item.title}</h1>
         <p>{item.blurb}</p>
-        <div className="detail-actions"><button className="primary-action">Apply on organization site <ExternalLink/></button><button onClick={() => onSave(item.id)}>{saved.includes(item.id) ? <BookmarkCheck/> : <Bookmark/>}</button><button onClick={() => onCompare(item.id)}><Columns3/></button></div>
+        <div className="detail-actions"><a className="primary-action" href={item.applyUrl} target="_blank" rel="noreferrer">Apply on organization site <ExternalLink/></a><button aria-label={saved.includes(item.id) ? 'Remove from saved opportunities' : 'Save opportunity'} onClick={() => onSave(item.id)}>{saved.includes(item.id) ? <BookmarkCheck/> : <Bookmark/>}</button><button aria-label="Add to comparison" onClick={() => onCompare(item.id)}><Columns3/></button></div>
       </div>
     </section>
     <section className="detail-layout">
@@ -353,10 +363,10 @@ function Detail({ item, saved, onBack, onSave, onCompare }) {
         <section className="recommendation"><span>BEACON VIEW</span><h3>Why we recommend it</h3><p>{item.why}</p><div><Check/> Substantive work <Check/> Credible mentors <Check/> Clear student output</div></section>
         <section><p className="eyebrow">ELIGIBILITY</p><h2>Who should apply</h2><ul><li>Students currently in grades {item.grades}</li><li>Available for the full {item.duration.toLowerCase()} program period</li><li>Comfortable working independently and in a team</li><li>Demonstrated interest in finance, business, economics, or research</li></ul></section>
         <section><p className="eyebrow">APPLICATION REQUIREMENTS</p><h2>What you’ll need</h2><ol><li><span>01</span>Short application and activity list</li><li><span>02</span>Two written responses</li><li><span>03</span>One teacher or mentor recommendation</li><li><span>04</span>Team information, where applicable</li></ol></section>
-        <section className="source-row"><div><small>ORIGINAL SOURCE</small><a href="#">Official program page <ExternalLink/></a></div><div><small>LAST VERIFIED</small><b>September 24, 2026</b></div><button>Report outdated information</button></section>
+        <section className="source-row"><div><small>ORIGINAL SOURCE</small><a href={item.sourceUrl} target="_blank" rel="noreferrer">Official program page <ExternalLink/></a></div><div><small>LAST VERIFIED</small><b>September 24, 2026</b></div><a className="report-link" href={`mailto:opportunities@beaconfinance.org?subject=${encodeURIComponent(`Outdated opportunity: ${item.title}`)}`}>Report outdated information</a></section>
       </div>
     </section>
-    <OpportunitySection number={3} title="Similar opportunities" subtitle="More programs worth a closer look." items={opportunities.filter(o => o.id !== item.id).slice(0,3)} onView={() => {}}/>
+    <OpportunitySection number={3} title="Similar opportunities" subtitle="More programs worth a closer look." items={opportunities.filter(o => o.id !== item.id).slice(0,3)} onView={onView}/>
   </main>
 }
 
