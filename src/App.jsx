@@ -27,155 +27,224 @@ import {
 
 const opportunities = [
   {
-    id: 1,
-    org: "The Wharton School",
-    shortOrg: "WHARTON",
-    title: "Global High School Investment Competition",
-    category: "Competition",
-    paid: "Unpaid",
-    location: "Global · Remote",
-    grades: "9–12",
-    deadline: "Sep 30",
-    deadlineLong: "September 30, 2026",
-    time: "3–5 hrs / week",
-    duration: "10 weeks",
-    difficulty: "Competitive",
-    format: "Remote",
-    applicationType: "Team",
-    deadlineDate: "2026-09-30",
-    blurb:
-      "Build and defend an investment strategy with a team using a real-world case and institutional-grade analysis.",
-    why: "A rare mix of markets, teamwork, and persuasive communication—with a globally recognized final round.",
-    image:
-      "https://www.smeal.psu.edu/traderoom/images/TradingRoom_015.jpg/@@images/image.jpeg",
-    logo: "https://upload.wikimedia.org/wikipedia/en/thumb/4/41/University_of_Pennsylvania_shield.svg/240px-University_of_Pennsylvania_shield.svg.png",
-    impact: "High impact",
-    added: "Added 2 days ago",
-    applyUrl: "https://globalyouth.wharton.upenn.edu/investment-competition/",
-    sourceUrl: "https://globalyouth.wharton.upenn.edu/investment-competition/",
-  },
-  {
-    id: 2,
-    org: "Bank of America",
-    shortOrg: "BANK OF AMERICA",
-    title: "Student Leaders Program",
-    category: "Internship",
-    paid: "Paid",
-    location: "40+ U.S. markets",
-    grades: "11–12",
-    deadline: "Oct 14",
-    deadlineLong: "October 14, 2026",
-    time: "35 hrs / week",
-    duration: "8 weeks",
-    difficulty: "Highly competitive",
-    format: "In person",
-    applicationType: "Individual",
-    deadlineDate: "2026-10-14",
-    blurb:
-      "A paid summer placement with a local nonprofit plus a national leadership summit in Washington, D.C.",
-    why: "Substantive local work and a selective national network make this much more than a résumé line.",
-    image:
-      "https://resources.finalsite.net/images/f_auto%2Cq_auto%2Ct_image_size_2/v1764086245/ccsk12inus/ewbz8bbnerupu2pjkzu3/AaronandVaradatStateFarm1.jpg",
-    logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/2/20/Bank_of_America_logo.svg/512px-Bank_of_America_logo.svg.png",
-    impact: "High impact",
-    added: "Added this week",
-    applyUrl:
-      "https://about.bankofamerica.com/en/making-an-impact/student-leaders",
-    sourceUrl:
-      "https://about.bankofamerica.com/en/making-an-impact/student-leaders",
-  },
-  {
-    id: 3,
-    org: "LaunchX",
-    shortOrg: "LAUNCHX",
-    title: "LaunchX Entrepreneurship Program",
-    category: "Summer Program",
-    paid: "Unpaid",
-    location: "Remote",
-    grades: "10–12",
-    deadline: "Oct 28",
-    deadlineLong: "October 28, 2026",
-    time: "Full time",
-    duration: "4 weeks",
-    difficulty: "Competitive",
-    format: "Remote",
-    applicationType: "Individual",
-    deadlineDate: "2026-10-28",
-    blurb:
-      "Launch a real venture with ambitious peers through customer research, prototyping, and structured mentorship.",
-    why: "Excellent for students who want to test whether they actually enjoy building—not just studying—businesses.",
-    image:
-      "https://www.temple.edu/sites/www/files/media/image/20180828_160_90_Fox_012.jpg",
-    logo: "",
-    impact: "Featured",
-    added: "Added yesterday",
-    applyUrl: "https://www.launchx.com/programs/online-entrepreneurship",
-    sourceUrl: "https://www.launchx.com/programs/online-entrepreneurship",
-  },
-  {
-    id: 4,
-    org: "Junior Achievement",
-    shortOrg: "JA",
-    title: "National Stock Market Challenge",
-    category: "Competition",
-    paid: "Scholarship awards",
-    location: "Remote",
-    grades: "9–12",
-    deadline: "Nov 03",
-    deadlineLong: "November 3, 2026",
-    time: "2 hrs / week",
-    duration: "6 weeks",
-    difficulty: "Moderate",
-    format: "Remote",
-    applicationType: "Team",
-    deadlineDate: "2026-11-03",
-    blurb:
-      "Manage a simulated portfolio and respond to market-moving news in a fast-paced team competition.",
-    why: "A strong, accessible first signal of serious interest in markets and portfolio thinking.",
-    image:
-      "https://www.iona.edu/sites/default/files/styles/scale/public/2025-08/ancillary-images/students-trading-floor.jpg?itok=DG3GmheJ",
-    logo: "",
-    impact: "Recently added",
-    added: "Added today",
-    applyUrl: "https://jausa.ja.org/programs/ja-stock-market-challenge",
-    sourceUrl: "https://jausa.ja.org/programs/ja-stock-market-challenge",
-  },
-  {
-    id: 5,
-    org: "University of Michigan",
-    shortOrg: "MICHIGAN",
-    title: "Youth Research Scholars",
+    id: 101,
+    org: "National Institutes of Health",
+    shortOrg: "NIH",
+    title: "NIH Summer Internship Program",
     category: "Research",
     paid: "Stipend",
-    location: "Ann Arbor, MI",
-    grades: "11–12",
-    deadline: "Nov 18",
-    deadlineLong: "November 18, 2026",
-    time: "20 hrs / week",
-    duration: "7 weeks",
+    location: "Bethesda, MD + NIH campuses",
+    grades: "12",
+    deadline: "Jan 26",
+    deadlineLong: "January 26, 2027 at noon ET",
+    time: "Full time",
+    duration: "Summer 2027",
     difficulty: "Highly competitive",
     format: "In person",
     applicationType: "Individual",
-    deadlineDate: "2026-11-18",
+    deadlineDate: "2027-01-26",
     blurb:
-      "Join a faculty-led research group and present an original project at a closing symposium.",
-    why: "Real mentorship, defined outputs, and exposure to the pace and ambiguity of university research.",
+      "Conduct full-time biomedical, behavioral, or social-science research inside an NIH laboratory with a principal investigator.",
+    why: "One of the strongest routes for a graduating senior to do real, mentored federal research and present substantive work.",
+    overview:
+      "NIH summer interns join an Intramural Research Program group and contribute to active research in fields ranging from biology and engineering to psychology, mathematics, and bioinformatics.",
+    eligibilityDetails: [
+      "Enrolled at least half-time as a high school senior when applying",
+      "Graduated from high school before the internship begins",
+      "U.S. citizen or permanent resident and age 18 by September 30, 2027, with a limited local exception for some 17-year-olds",
+    ],
+    requirements: [
+      "Coursework and grades",
+      "CV or résumé",
+      "Personal statement",
+      "Two references",
+    ],
     image:
-      "https://umdearborn.edu/sites/default/files/2023-09/UMD-FanLab-Jun23%2826%29-a.jpeg",
+      "https://images.unsplash.com/photo-1532094349884-543bc11b234d?auto=format&fit=crop&w=1800&q=85",
+    logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/8/87/NIH_Master_Logo_Vertical_2Color.svg/320px-NIH_Master_Logo_Vertical_2Color.svg.png",
+    impact: "High impact",
+    added: "Verified today",
+    verified: "September 26, 2026",
+    applyUrl: "https://www.training.nih.gov/research-training/pb/sip/",
+    sourceUrl: "https://www.training.nih.gov/research-training/pb/sip/",
+  },
+  {
+    id: 102,
+    org: "Microsoft",
+    shortOrg: "MICROSOFT",
+    title: "Microsoft Discovery Program",
+    category: "Internship",
+    paid: "Paid",
+    location: "Redmond, WA or Atlanta, GA",
+    grades: "12",
+    deadline: "Early Feb",
+    deadlineLong: "Applications open in early February; reviewed rolling",
+    time: "Full time",
+    duration: "4 weeks",
+    difficulty: "Highly competitive",
+    format: "In person",
+    applicationType: "Individual",
+    deadlineDate: "2027-02-28",
+    blurb:
+      "Spend four paid weeks building hands-on projects, developing professional skills, and learning from Microsoft mentors.",
+    why: "A rare paid technology internship designed specifically for graduating high school seniors—not college juniors.",
+    overview:
+      "Microsoft Discovery introduces graduating seniors to technology careers through project work, mentorship, and professional development at the company’s Redmond and Atlanta campuses.",
+    eligibilityDetails: [
+      "Graduating high school senior entering a bachelor’s degree program",
+      "Lives and attends school within 50 miles of Redmond, or attends an eligible Atlanta-area school district",
+      "Completed pre-calculus or an equivalent course before the program starts",
+    ],
+    requirements: [
+      "Résumé",
+      "College acceptance information",
+      "Intended major",
+      "Extracurricular or academic-support affiliations",
+    ],
+    image:
+      "https://images.unsplash.com/photo-1521737711867-e3b97375f902?auto=format&fit=crop&w=1800&q=85",
+    logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/9/96/Microsoft_logo_%282012%29.svg/3840px-Microsoft_logo_%282012%29.svg.png",
+    impact: "High impact",
+    added: "Verified today",
+    verified: "September 26, 2026",
+    applyUrl: "https://careers.microsoft.com/v2/global/en/discoveryprogram",
+    sourceUrl: "https://careers.microsoft.com/v2/global/en/discoveryprogram",
+  },
+  {
+    id: 103,
+    org: "U.S. Securities and Exchange Commission",
+    shortOrg: "SEC",
+    title: "SEC Pathways Student Trainee",
+    category: "Internship",
+    paid: "Paid",
+    location: "Washington, DC + regional offices",
+    grades: "9–12",
+    deadline: "Rolling",
+    deadlineLong: "Positions are posted year-round on USAJOBS",
+    time: "Varies by posting",
+    duration: "Varies",
+    difficulty: "Competitive",
+    format: "In person",
+    applicationType: "Individual",
+    deadlineDate: "2099-12-31",
+    blurb:
+      "Work alongside SEC professionals through a paid federal pathway spanning finance, operations, technology, and regulation.",
+    why: "One of the few official federal career pathways that explicitly includes currently enrolled high school students.",
+    overview:
+      "SEC Pathways Student Trainees receive on-the-job training, professional development, shadowing opportunities, and exposure to the work of the nation’s securities regulator.",
+    eligibilityDetails: [
+      "Currently enrolled or accepted for enrollment in a qualifying educational institution",
+      "High school students are explicitly eligible",
+      "U.S. citizenship and posting-specific requirements apply",
+    ],
+    requirements: [
+      "USAJOBS profile",
+      "Résumé",
+      "Transcript or enrollment documentation",
+      "Posting-specific materials",
+    ],
+    image:
+      "https://upload.wikimedia.org/wikipedia/commons/1/19/U.S._Securities_and_Exchange_Commission_headquarters.JPG",
+    logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/1/1c/Seal_of_the_United_States_Securities_and_Exchange_Commission.svg/3840px-Seal_of_the_United_States_Securities_and_Exchange_Commission.svg.png",
+    impact: "Featured",
+    added: "Verified today",
+    verified: "September 26, 2026",
+    applyUrl: "https://www.usajobs.gov/Search/Results?a=SE00&hp=student",
+    sourceUrl: "https://www.sec.gov/jobs/jobs_students_pathways.shtml",
+  },
+  {
+    id: 104,
+    org: "Los Alamos National Laboratory",
+    shortOrg: "LANL",
+    title: "High School Internship Program",
+    category: "Internship",
+    paid: "Paid",
+    location: "Los Alamos, NM",
+    grades: "12",
+    deadline: "Apr 15",
+    deadlineLong: "April 15 for the summer cycle",
+    time: "Full time in summer",
+    duration: "Typically 10 weeks",
+    difficulty: "Highly competitive",
+    format: "In person",
+    applicationType: "Individual",
+    deadlineDate: "2027-04-15",
+    blurb:
+      "Contribute to technical or professional projects at a national laboratory while working closely with a mentor and co-mentor.",
+    why: "Students do real work inside a major national lab, with options extending beyond STEM into business and operations.",
+    overview:
+      "LANL’s high school program gives qualified New Mexico seniors paid work experience across scientific, technical, administrative, business, and operations teams.",
+    eligibilityDetails: [
+      "Senior status and at least 16 years old when the internship begins",
+      "Attends a New Mexico high school",
+      "Maintains at least a 2.75 GPA and passes a new-employment drug test",
+    ],
+    requirements: [
+      "Résumé",
+      "Cover letter or personal statement",
+      "Transcript",
+      "Optional recommendation depending on cycle",
+    ],
+    image:
+      "https://images.unsplash.com/photo-1581093458791-9d42e3c4a8b3?auto=format&fit=crop&w=1800&q=85",
     logo: "",
     impact: "High impact",
-    added: "Added 4 days ago",
-    applyUrl:
-      "https://umdearborn.edu/academics/research/undergraduate-research",
+    added: "Verified today",
+    verified: "September 26, 2026",
+    applyUrl: "https://lanl.jobs/",
     sourceUrl:
-      "https://umdearborn.edu/academics/research/undergraduate-research",
+      "https://cdn.lanl.gov/files/2025-guide-for-hs-applicants_9a659.pdf",
+  },
+  {
+    id: 105,
+    org: "Stony Brook University",
+    shortOrg: "STONY BROOK",
+    title: "Simons Summer Research Program",
+    category: "Research",
+    paid: "Stipend / award",
+    location: "Stony Brook, NY",
+    grades: "11",
+    deadline: "Late Nov",
+    deadlineLong: "2027 application materials post in late November 2026",
+    time: "20+ hrs / week",
+    duration: "About 6 weeks",
+    difficulty: "Highly competitive",
+    format: "In person",
+    applicationType: "Individual",
+    deadlineDate: "2099-12-31",
+    blurb:
+      "Join a Stony Brook research team in science, math, or engineering and work directly with a faculty mentor.",
+    why: "The program offers genuine lab integration and faculty mentorship; admission is exceptionally selective, below five percent.",
+    overview:
+      "Simons Fellows learn laboratory tools, become part of an active university research team, and complete a sustained mentored project in science, mathematics, or engineering.",
+    eligibilityDetails: [
+      "Current high school junior when applying",
+      "U.S. citizen or permanent resident",
+      "At least 16 when the program begins and nominated by the student’s high school",
+    ],
+    requirements: [
+      "School nomination",
+      "Transcript",
+      "Brief written responses",
+      "Two teacher recommendations",
+    ],
+    image:
+      "https://images.unsplash.com/photo-1531482615713-2afd69097998?auto=format&fit=crop&w=1800&q=85",
+    logo: "https://upload.wikimedia.org/wikipedia/en/thumb/9/94/Stony_Brook_University_seal.svg/320px-Stony_Brook_University_seal.svg.png",
+    impact: "High impact",
+    added: "Verified today",
+    verified: "September 26, 2026",
+    applyUrl: "https://www.stonybrook.edu/simons/",
+    sourceUrl:
+      "https://www.stonybrook.edu/commcms/simons/applying_to/how-to-apply",
   },
 ];
 
 function usePersistentState(key, initialValue) {
+  const storageKey = `beacon:v2:${key}`;
   const [value, setValue] = useState(() => {
     try {
-      const stored = window.localStorage.getItem(`beacon:${key}`);
+      const stored = window.localStorage.getItem(storageKey);
       return stored === null ? initialValue : JSON.parse(stored);
     } catch {
       return initialValue;
@@ -184,11 +253,11 @@ function usePersistentState(key, initialValue) {
 
   useEffect(() => {
     try {
-      window.localStorage.setItem(`beacon:${key}`, JSON.stringify(value));
+      window.localStorage.setItem(storageKey, JSON.stringify(value));
     } catch {
       // Storage can be unavailable in private browsing; the session still works.
     }
-  }, [key, value]);
+  }, [storageKey, value]);
 
   return [value, setValue];
 }
@@ -311,7 +380,7 @@ function OrgLogo({ item, large = false }) {
           onError={() => setFailed(true)}
         />
       ) : (
-        <span>{item.shortOrg.slice(0, 2)}</span>
+        <span>{item.shortOrg.length <= 4 ? item.shortOrg : item.shortOrg.slice(0, 2)}</span>
       )}
     </div>
   );
@@ -484,16 +553,16 @@ function App() {
             Saved <span className="count">{saved.length}</span>
           </button>
         </nav>
-      <button
-        className="profile"
-        aria-label="Open profile menu"
-        aria-expanded={profileOpen}
-        onClick={() => setProfileOpen((open) => !open)}
-      >
-        <span className="profile-avatar">GU</span>
-        <b>Guest User</b>
-        <ChevronDown size={14} />
-      </button>
+        <button
+          className="profile"
+          aria-label="Open profile menu"
+          aria-expanded={profileOpen}
+          onClick={() => setProfileOpen((open) => !open)}
+        >
+          <span className="profile-avatar">GU</span>
+          <b>Guest User</b>
+          <ChevronDown size={14} />
+        </button>
         <button
           className="menu-button"
           aria-label="Open navigation"
@@ -501,15 +570,32 @@ function App() {
           onClick={() => setMobileOpen(!mobileOpen)}
         >
           <Menu />
-      </button>
-      {profileOpen && (
-        <div className="profile-menu">
-          <div><b>Guest User</b><span>Guest profile</span></div>
-          <button onClick={() => { setProfileOpen(false); go("saved"); }}>Saved opportunities <Bookmark /></button>
-          <button onClick={() => { setProfileOpen(false); go("compare"); }}>Comparison shortlist <Columns3 /></button>
-        </div>
-      )}
-    </header>
+        </button>
+        {profileOpen && (
+          <div className="profile-menu">
+            <div>
+              <b>Guest User</b>
+              <span>Guest profile</span>
+            </div>
+            <button
+              onClick={() => {
+                setProfileOpen(false);
+                go("saved");
+              }}
+            >
+              Saved opportunities <Bookmark />
+            </button>
+            <button
+              onClick={() => {
+                setProfileOpen(false);
+                go("compare");
+              }}
+            >
+              Comparison shortlist <Columns3 />
+            </button>
+          </div>
+        )}
+      </header>
 
       {compare.length > 0 && page === "saved" && (
         <button className="compare-dock" onClick={() => go("compare")}>
@@ -700,23 +786,23 @@ function Discovery({
   const sections = [
     [
       "Closing Soon",
-      "The deadlines worth acting on now.",
-      opportunities.slice(0, 3),
+      "Verified application windows worth preparing for now.",
+      [opportunities[0], opportunities[1], opportunities[4]],
     ],
     [
       "Paid Opportunities",
       "Strong experiences that compensate your time.",
-      [opportunities[1], opportunities[4], opportunities[3]],
+      [opportunities[1], opportunities[2], opportunities[3]],
     ],
     [
-      "High-Impact Opportunities",
-      "Selective programs with meaningful scope.",
-      [opportunities[4], opportunities[0], opportunities[1]],
+      "Research Internships",
+      "Work alongside active scientists and technical teams.",
+      [opportunities[0], opportunities[3], opportunities[4]],
     ],
     [
-      "Recently Added",
-      "Freshly verified by the Beacon team.",
-      opportunities.slice(2, 5),
+      "Local Eligibility",
+      "Excellent programs with important geographic requirements.",
+      [opportunities[1], opportunities[3], opportunities[2]],
     ],
   ];
   return (
@@ -737,13 +823,7 @@ function Discovery({
       </section>
 
       <div className="category-strip">
-        {[
-          "All opportunities",
-          "Internship",
-          "Competition",
-          "Research",
-          "Summer Program",
-        ].map((c) => (
+        {["All opportunities", "Internship", "Research"].map((c) => (
           <button
             key={c}
             className={activeCategory === c ? "active" : ""}
@@ -852,7 +932,7 @@ function Discovery({
                 <div className="hero-image">
                   <img
                     src={item.image}
-                    alt="Students working together on a professional project"
+                    alt={`${item.title} opportunity from ${item.org}`}
                     fetchPriority="high"
                     decoding="async"
                   />
@@ -971,16 +1051,16 @@ function Discovery({
       <section className="signal-band">
         <p>THE BEACON STANDARD</p>
         <div>
-          <strong>500+</strong>
-          <span>Programs reviewed</span>
+          <strong>5</strong>
+          <span>Programs verified</span>
         </div>
         <div>
-          <strong>86</strong>
-          <span>Open now</span>
+          <strong>100%</strong>
+          <span>Official sources</span>
         </div>
         <div>
-          <strong>72h</strong>
-          <span>Verification cycle</span>
+          <strong>5</strong>
+          <span>Paid or stipend</span>
         </div>
         <p className="quote">
           “No filler. Just opportunities we’d send to a serious student.”
@@ -1062,7 +1142,7 @@ function Detail({ item, saved, onBack, onSave, onCompare, onView }) {
         <ArrowLeft /> Back to opportunities
       </button>
       <section className="detail-hero">
-        <img src={item.image} alt="Students participating in the program" />
+        <img src={item.image} alt={`${item.org} internship setting`} />
         <div className="detail-title">
           <div className="org-row">
             <OrgLogo item={item} large />
@@ -1125,19 +1205,8 @@ function Detail({ item, saved, onBack, onSave, onCompare, onView }) {
         <div className="detail-copy">
           <section>
             <p className="eyebrow">OVERVIEW</p>
-            <h2>A serious test of how you think.</h2>
-            <p>
-              This program gives students a structured way to move beyond
-              classroom concepts and apply judgment in a demanding,
-              collaborative setting. Participants work toward a clear final
-              output, receive feedback from experienced mentors, and build a
-              practical understanding of the field.
-            </p>
-            <p>
-              The strongest applicants show curiosity, follow-through, and the
-              ability to explain their thinking. Prior experience helps, but it
-              matters less than evidence that you have taken initiative.
-            </p>
+            <h2>What the experience involves</h2>
+            <p>{item.overview}</p>
           </section>
           <section className="recommendation">
             <span>BEACON VIEW</span>
@@ -1152,34 +1221,21 @@ function Detail({ item, saved, onBack, onSave, onCompare, onView }) {
             <p className="eyebrow">ELIGIBILITY</p>
             <h2>Who should apply</h2>
             <ul>
-              <li>Students currently in grades {item.grades}</li>
-              <li>
-                Available for the full {item.duration.toLowerCase()} program
-                period
-              </li>
-              <li>Comfortable working independently and in a team</li>
-              <li>
-                Demonstrated interest in finance, business, economics, or
-                research
-              </li>
+              {item.eligibilityDetails.map((requirement) => (
+                <li key={requirement}>{requirement}</li>
+              ))}
             </ul>
           </section>
           <section>
             <p className="eyebrow">APPLICATION REQUIREMENTS</p>
             <h2>What you’ll need</h2>
             <ol>
-              <li>
-                <span>01</span>Short application and activity list
-              </li>
-              <li>
-                <span>02</span>Two written responses
-              </li>
-              <li>
-                <span>03</span>One teacher or mentor recommendation
-              </li>
-              <li>
-                <span>04</span>Team information, where applicable
-              </li>
+              {item.requirements.map((requirement, index) => (
+                <li key={requirement}>
+                  <span>{String(index + 1).padStart(2, "0")}</span>
+                  {requirement}
+                </li>
+              ))}
             </ol>
           </section>
           <section className="source-row">
@@ -1191,7 +1247,7 @@ function Detail({ item, saved, onBack, onSave, onCompare, onView }) {
             </div>
             <div>
               <small>LAST VERIFIED</small>
-              <b>September 24, 2026</b>
+              <b>{item.verified}</b>
             </div>
             <a
               className="report-link"
@@ -1520,7 +1576,7 @@ function SearchOverlay({
 
 function FilterPanel({ filters, setFilters, resultCount, onClear, onClose }) {
   const groups = [
-    ["Category", ["Internship", "Competition", "Research", "Summer Program"]],
+    ["Category", ["Internship", "Research"]],
     ["Grade level", ["9th", "10th", "11th", "12th"]],
     ["Compensation", ["Paid", "Unpaid", "Stipend / award"]],
     ["Format", ["Remote", "In person"]],
