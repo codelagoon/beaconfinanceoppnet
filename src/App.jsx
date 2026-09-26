@@ -490,7 +490,8 @@ function App() {
         aria-expanded={profileOpen}
         onClick={() => setProfileOpen((open) => !open)}
       >
-        <span>GK</span>
+        <span className="profile-avatar">GU</span>
+        <b>Guest User</b>
         <ChevronDown size={14} />
       </button>
         <button
@@ -503,7 +504,7 @@ function App() {
       </button>
       {profileOpen && (
         <div className="profile-menu">
-          <div><b>GK</b><span>Student profile</span></div>
+          <div><b>Guest User</b><span>Guest profile</span></div>
           <button onClick={() => { setProfileOpen(false); go("saved"); }}>Saved opportunities <Bookmark /></button>
           <button onClick={() => { setProfileOpen(false); go("compare"); }}>Comparison shortlist <Columns3 /></button>
         </div>
