@@ -24,8 +24,9 @@ import {
   X,
   Zap,
 } from "lucide-react";
+import { opportunities } from "./opportunities.generated.js";
 
-const opportunities = [
+const legacyOpportunities = [
   {
     id: 101,
     org: "National Institutes of Health",
@@ -241,7 +242,7 @@ const opportunities = [
 ];
 
 function usePersistentState(key, initialValue) {
-  const storageKey = `beacon:v2:${key}`;
+  const storageKey = `beacon:v3:${key}`;
   const [value, setValue] = useState(() => {
     try {
       const stored = window.localStorage.getItem(storageKey);
@@ -304,13 +305,7 @@ function matchesFilters(item, filters) {
       return false;
   }
   if (filters.Compensation.length) {
-    const compensation =
-      item.paid === "Paid"
-        ? "Paid"
-        : item.paid === "Unpaid"
-          ? "Unpaid"
-          : "Stipend / award";
-    if (!filters.Compensation.includes(compensation)) return false;
+    if (!filters.Compensation.includes(item.paid)) return false;
   }
   if (filters.Format.length && !filters.Format.includes(item.format))
     return false;
@@ -783,26 +778,53 @@ function Discovery({
     window.addEventListener("keydown", handleKeys);
     return () => window.removeEventListener("keydown", handleKeys);
   });
+  const categories = [
+    "All opportunities",
+    ...new Set(opportunities.map((opportunity) => opportunity.category)),
+  ];
+  const dated = opportunities
+    .filter((opportunity) => opportunity.deadlineDate !== "2099-12-31")
+    .sort((a, b) => a.deadlineDate.localeCompare(b.deadlineDate));
+  const compensated = opportunities.filter(
+    (opportunity) => opportunity.paid === "Stipend / award",
+  );
+  const flexible = opportunities.filter(
+    (opportunity) => opportunity.format === "Remote" || opportunity.format === "Hybrid",
+  );
+  const nyc = opportunities.filter((opportunity) =>
+    /new york|brooklyn|bronx|queens|manhattan|staten island|nyc/i.test(
+      opportunity.location,
+    ),
+  );
   const sections = [
     [
       "Closing Soon",
       "Verified application windows worth preparing for now.",
-      [opportunities[0], opportunities[1], opportunities[4]],
+      dated.slice(0, 3),
+    ],
+    [
+      "Recently Added",
+      "Fresh additions to the Beacon opportunity index.",
+      opportunities.slice(24, 27),
     ],
     [
       "Paid Opportunities",
-      "Strong experiences that compensate your time.",
-      [opportunities[1], opportunities[2], opportunities[3]],
+      "Programs that explicitly list a stipend or award.",
+      compensated.slice(0, 3),
     ],
     [
-      "Research Internships",
-      "Work alongside active scientists and technical teams.",
-      [opportunities[0], opportunities[3], opportunities[4]],
+      "High-Impact Opportunities",
+      "Selective research, fellowship, and competition experiences.",
+      opportunities
+        .filter((opportunity) =>
+          ["Research", "Fellowship", "Competition"].includes(opportunity.category),
+        )
+        .slice(0, 3),
     ],
     [
-      "Local Eligibility",
-      "Excellent programs with important geographic requirements.",
-      [opportunities[1], opportunities[3], opportunities[2]],
+      "Featured Opportunities",
+      "A balanced mix of standout NYC and flexible programs.",
+      [nyc[0], flexible[0], nyc[1]].filter(Boolean),
     ],
   ];
   return (
@@ -817,13 +839,13 @@ function Discovery({
           </h1>
         </div>
         <p className="mast-copy">
-          Five fresh, verified picks. Swipe to triage quickly, then go deep when
-          something earns your attention.
+          200 sourced opportunities for NYC students, including remote and
+          hybrid options. Swipe quickly, then go deep when something earns your attention.
         </p>
       </section>
 
       <div className="category-strip">
-        {["All opportunities", "Internship", "Research"].map((c) => (
+        {categories.map((c) => (
           <button
             key={c}
             className={activeCategory === c ? "active" : ""}
@@ -1051,16 +1073,16 @@ function Discovery({
       <section className="signal-band">
         <p>THE BEACON STANDARD</p>
         <div>
-          <strong>5</strong>
+          <strong>{opportunities.length}</strong>
           <span>Programs verified</span>
         </div>
         <div>
-          <strong>100%</strong>
-          <span>Official sources</span>
+          <strong>{nyc.length}</strong>
+          <span>NYC opportunities</span>
         </div>
         <div>
-          <strong>5</strong>
-          <span>Paid or stipend</span>
+          <strong>{flexible.length}</strong>
+          <span>Remote or hybrid</span>
         </div>
         <p className="quote">
           “No filler. Just opportunities we’d send to a serious student.”
@@ -1576,10 +1598,10 @@ function SearchOverlay({
 
 function FilterPanel({ filters, setFilters, resultCount, onClear, onClose }) {
   const groups = [
-    ["Category", ["Internship", "Research"]],
+    ["Category", [...new Set(opportunities.map((item) => item.category))]],
     ["Grade level", ["9th", "10th", "11th", "12th"]],
-    ["Compensation", ["Paid", "Unpaid", "Stipend / award"]],
-    ["Format", ["Remote", "In person"]],
+    ["Compensation", ["Stipend / award", "No stipend listed"]],
+    ["Format", ["Remote", "Hybrid", "In person"]],
     ["Deadline", ["Next 7 days", "Next 30 days", "This semester"]],
     ["Time commitment", ["Under 5 hrs / week", "5–15 hrs / week", "Full time"]],
     ["Application type", ["Individual", "Team"]],
