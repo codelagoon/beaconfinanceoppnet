@@ -155,11 +155,11 @@ function App() {
     setPage(next); setMobileOpen(false); window.scrollTo({top: 0, behavior: 'smooth'})
   }
   const toggleSaved = id => setSaved(s => s.includes(id) ? s.filter(x => x !== id) : [...s, id])
-  const toggleCompare = id => setCompare(s => s.includes(id) ? s.filter(x => x !== id) : s.length < 3 ? [...s, id] : s)
+  const toggleCompare = id => setCompare(s => s.includes(id) ? s.filter(x => x !== id) : s.length < 4 ? [...s, id] : s)
   const actOnOpportunity = (kind, id) => {
     setActionHistory(h => [...h.slice(-4), { kind, id, current, saved, compare, reviewed }])
     if (kind === 'save') setSaved(s => s.includes(id) ? s : [...s, id])
-    if (kind === 'compare') setCompare(s => s.includes(id) ? s : s.length < 3 ? [...s, id] : s)
+    if (kind === 'compare') setCompare(s => s.includes(id) ? s : s.length < 4 ? [...s, id] : s)
     setReviewed(r => Math.min(opportunities.length, r + 1))
     setCurrent(c => (c + 1) % opportunities.length)
   }
@@ -379,13 +379,13 @@ function ComparePage({ items, onRemove, onBack, onView }) {
   const fields = [['Deadline','deadlineLong'],['Pay','paid'],['Time commitment','time'],['Eligibility','grades'],['Location','location'],['Duration','duration'],['Application difficulty','difficulty'],['Program type','category']]
   return <main className="compare-page">
     <button className="back-link" onClick={onBack}><ArrowLeft/> Back to discovery</button>
-    <section className="page-intro"><p className="eyebrow">DECISION TOOL</p><h1>Compare your shortlist</h1><p>Put the tradeoffs in one place. You can compare up to three opportunities.</p></section>
-    <div className="compare-table">
+    <section className="page-intro"><p className="eyebrow">DECISION TOOL</p><h1>Compare your shortlist</h1><p>Put the tradeoffs in one place. You can compare up to four opportunities.</p></section>
+    {items.length === 0 ? <div className="empty-state"><Columns3/><h2>No opportunities selected</h2><p>Add opportunities from discovery or your saved list to compare deadlines, eligibility, time, and value.</p><button className="primary-action" onClick={onBack}>Browse opportunities <ArrowRight/></button></div> : <div className="compare-scroll" role="region" aria-label="Opportunity comparison" tabIndex="0"><div className="compare-table" style={{gridTemplateColumns: `180px repeat(${items.length}, minmax(220px, 1fr))`}}>
       <div className="compare-header label-cell">OPPORTUNITY</div>
-      {items.map(item => <div className="compare-header" key={item.id}><button onClick={()=>onRemove(item.id)}><X/></button><OrgLogo item={item}/><small>{item.org}</small><h3>{item.title}</h3><button className="view-link" onClick={()=>onView(item.id)}>View <ArrowRight/></button></div>)}
+      {items.map(item => <div className="compare-header" key={item.id}><button aria-label={`Remove ${item.title} from comparison`} onClick={()=>onRemove(item.id)}><X/></button><OrgLogo item={item}/><small>{item.org}</small><h3>{item.title}</h3><button className="view-link" onClick={()=>onView(item.id)}>View details <ArrowRight/></button></div>)}
       {fields.map(([label, key]) => <React.Fragment key={key}><div className="label-cell">{label}</div>{items.map(item => <div className="value-cell" key={item.id}>{key==='grades'?'Grades ':''}{item[key]}</div>)}</React.Fragment>)}
-    </div>
-    {items.length < 3 && <button className="add-compare" onClick={onBack}>+ Add another opportunity</button>}
+    </div></div>}
+    {items.length > 0 && items.length < 4 && <button className="add-compare" onClick={onBack}>+ Add another opportunity</button>}
   </main>
 }
 
