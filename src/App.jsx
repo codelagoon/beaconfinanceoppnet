@@ -1,4 +1,4 @@
-import React, { useMemo, useRef, useState } from 'react'
+import React, { useEffect, useMemo, useRef, useState } from 'react'
 import {
   ArrowLeft, ArrowRight, ArrowUp, Bookmark, BookmarkCheck, BriefcaseBusiness, CalendarDays,
   Check, ChevronDown, Clock3, Columns3, ExternalLink, GraduationCap, Heart,
@@ -123,8 +123,36 @@ const opportunities = [
   }
 ]
 
-function Brand({ compact = false }) {
-  return <button className="brand" aria-label="Beacon Finance home">
+function usePersistentState(key, initialValue) {
+  const [value, setValue] = useState(() => {
+    try {
+      const stored = window.localStorage.getItem(`beacon:${key}`)
+      return stored === null ? initialValue : JSON.parse(stored)
+    } catch {
+      return initialValue
+    }
+  })
+
+  useEffect(() => {
+    try {
+      window.localStorage.setItem(`beacon:${key}`, JSON.stringify(value))
+    } catch {
+      // Storage can be unavailable in private browsing; the session still works.
+    }
+  }, [key, value])
+
+  return [value, setValue]
+}
+
+function routeFromHash() {
+  const hash = window.location.hash.replace('#', '')
+  if (hash.startsWith('opportunity-')) return {page: 'detail', id: Number(hash.replace('opportunity-', ''))}
+  if (['saved', 'compare', 'discover'].includes(hash)) return {page: hash}
+  return {page: 'discover'}
+}
+
+function Brand({ compact = false, onClick }) {
+  return <button className="brand" aria-label="Beacon Finance home" onClick={onClick}>
     <svg className="bull" viewBox="0 0 46 32" aria-hidden="true">
       <path d="M7 7c5 0 9 2 11 6M39 7c-5 0-9 2-11 6M7 7 3 2M39 7l4-5M16 12c2-3 12-3 14 0 2 3 1 12-2 15-3 3-7 3-10 0-3-3-4-12-2-15Z" />
       <path d="M18 20c3 2 7 2 10 0" />
@@ -141,18 +169,20 @@ function OrgLogo({ item, large = false }) {
 }
 
 function App() {
-  const [page, setPage] = useState('discover')
-  const [current, setCurrent] = useState(0)
-  const [saved, setSaved] = useState([2, 5])
-  const [compare, setCompare] = useState([1, 2])
+  const initialRoute = useMemo(routeFromHash, [])
+  const [page, setPage] = useState(initialRoute.page)
+  const [current, setCurrent] = usePersistentState('current-opportunity', initialRoute.id ? Math.max(0, opportunities.findIndex(o => o.id === initialRoute.id)) : 0)
+  const [saved, setSaved] = usePersistentState('saved-opportunities', [])
+  const [compare, setCompare] = usePersistentState('comparison', [])
   const [filtersOpen, setFiltersOpen] = useState(false)
   const [searchOpen, setSearchOpen] = useState(false)
   const [query, setQuery] = useState('')
-  const [activeCategory, setActiveCategory] = useState('All opportunities')
+  const [activeCategory, setActiveCategory] = usePersistentState('category', 'All opportunities')
   const [mobileOpen, setMobileOpen] = useState(false)
-  const [statuses, setStatuses] = useState({2: 'Applying', 5: 'Saved'})
+  const [statuses, setStatuses] = usePersistentState('application-statuses', {})
+  const [notes, setNotes] = usePersistentState('notes', {})
   const [actionHistory, setActionHistory] = useState([])
-  const [reviewed, setReviewed] = useState(0)
+  const [reviewed, setReviewed] = usePersistentState('reviewed-count', 0)
 
   const item = opportunities[current % opportunities.length]
   const visible = useMemo(() => opportunities.filter(o =>
@@ -160,10 +190,26 @@ function App() {
     (`${o.title} ${o.org} ${o.category}`.toLowerCase().includes(query.toLowerCase()))
   ), [query, activeCategory])
 
-  const go = (next, id) => {
+  useEffect(() => {
+    if (!window.location.hash) window.history.replaceState({beacon: true}, '', '#discover')
+    const handleBack = () => {
+      const route = routeFromHash()
+      if (route.id) setCurrent(Math.max(0, opportunities.findIndex(o => o.id === route.id)))
+      setPage(route.page)
+      setMobileOpen(false)
+    }
+    window.addEventListener('popstate', handleBack)
+    return () => window.removeEventListener('popstate', handleBack)
+  }, [setCurrent])
+
+  const go = (next, id, replace = false) => {
     if (id) setCurrent(opportunities.findIndex(o => o.id === id))
+    const hash = next === 'detail' ? `#opportunity-${id}` : `#${next}`
+    const method = replace ? 'replaceState' : 'pushState'
+    window.history[method]({beacon: true, fromBeacon: !replace}, '', hash)
     setPage(next); setMobileOpen(false); window.scrollTo({top: 0, behavior: 'smooth'})
   }
+  const goBack = () => window.history.state?.fromBeacon ? window.history.back() : go('discover', undefined, true)
   const toggleSaved = id => setSaved(s => s.includes(id) ? s.filter(x => x !== id) : [...s, id])
   const toggleCompare = id => setCompare(s => s.includes(id) ? s.filter(x => x !== id) : s.length < 4 ? [...s, id] : s)
   const actOnOpportunity = (kind, id) => {
@@ -185,7 +231,7 @@ function App() {
 
   return <div className="app-shell">
     <header className="topbar">
-      <Brand />
+      <Brand onClick={() => go('discover')} />
       <nav className={mobileOpen ? 'mobile-open' : ''}>
         <button className={page === 'discover' ? 'active' : ''} onClick={() => go('discover')}>Opportunities</button>
         <button onClick={() => { setSearchOpen(true); setMobileOpen(false) }}><Search size={17}/> Search</button>
@@ -201,8 +247,8 @@ function App() {
     </button>}
 
     {page === 'discover' && <Discovery item={item} current={current} saved={saved} compare={compare} reviewed={reviewed} lastAction={actionHistory.at(-1)} onAction={actOnOpportunity} onUndo={undoLastAction} onView={id => go('detail', id)} onCategory={setActiveCategory} activeCategory={activeCategory} />}
-    {page === 'detail' && <Detail item={item} saved={saved} onBack={() => go('discover')} onSave={toggleSaved} onCompare={toggleCompare} onView={id => go('detail', id)} />}
-    {page === 'saved' && <SavedPage items={opportunities.filter(o => saved.includes(o.id))} statuses={statuses} setStatuses={setStatuses} onView={id => go('detail', id)} onCompare={toggleCompare} />}
+    {page === 'detail' && <Detail item={item} saved={saved} onBack={goBack} onSave={toggleSaved} onCompare={toggleCompare} onView={id => go('detail', id)} />}
+    {page === 'saved' && <SavedPage items={opportunities.filter(o => saved.includes(o.id))} statuses={statuses} setStatuses={setStatuses} notes={notes} setNotes={setNotes} onView={id => go('detail', id)} onCompare={toggleCompare} />}
     {page === 'compare' && <ComparePage items={opportunities.filter(o => compare.includes(o.id))} onRemove={toggleCompare} onBack={() => go('discover')} onView={id => go('detail', id)} />}
 
     {searchOpen && <SearchOverlay query={query} setQuery={setQuery} results={visible} onClose={() => setSearchOpen(false)} onView={id => {setSearchOpen(false); go('detail', id)}} />}
@@ -370,7 +416,7 @@ function Detail({ item, saved, onBack, onSave, onCompare, onView }) {
   </main>
 }
 
-function SavedPage({ items, statuses, setStatuses, onView, onCompare }) {
+function SavedPage({ items, statuses, setStatuses, notes, setNotes, onView, onCompare }) {
   const [sort, setSort] = useState('Deadline')
   return <main className="saved-page">
     <section className="page-intro"><p className="eyebrow">YOUR SHORTLIST</p><h1>Saved opportunities</h1><p>Keep the good ones close. Track decisions, deadlines, and what needs to happen next.</p></section>
@@ -379,7 +425,7 @@ function SavedPage({ items, statuses, setStatuses, onView, onCompare }) {
       <img src={item.image} alt=""/>
       <div className="saved-main"><p>{item.category} · {item.org}</p><h2 onClick={()=>onView(item.id)}>{item.title}</h2><span><CalendarDays/> {item.deadlineLong} <MapPin/> {item.location}</span></div>
       <div className="status-control"><small>STATUS</small><select value={statuses[item.id] || 'Saved'} onChange={e=>setStatuses(s=>({...s,[item.id]:e.target.value}))}><option>Saved</option><option>Applying</option><option>Applied</option><option>Closed</option></select></div>
-      <textarea aria-label={`Notes for ${item.title}`} placeholder="Add a private note…" />
+      <textarea aria-label={`Notes for ${item.title}`} value={notes[item.id] || ''} onChange={e => setNotes(n => ({...n, [item.id]: e.target.value}))} placeholder="Add a private note…" />
       <button className="icon-button" onClick={() => onCompare(item.id)}><Columns3/></button>
     </article>)}</div>
   </main>
