@@ -151,6 +151,10 @@ function routeFromHash() {
   return {page: 'discover'}
 }
 
+function normalizeSearch(value) {
+  return value.toLowerCase().normalize('NFKD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-z0-9]+/g, ' ').trim()
+}
+
 function Brand({ compact = false, onClick }) {
   return <button className="brand" aria-label="Beacon Finance home" onClick={onClick}>
     <svg className="bull" viewBox="0 0 46 32" aria-hidden="true">
@@ -185,10 +189,14 @@ function App() {
   const [reviewed, setReviewed] = usePersistentState('reviewed-count', 0)
 
   const item = opportunities[current % opportunities.length]
-  const visible = useMemo(() => opportunities.filter(o =>
-    (activeCategory === 'All opportunities' || o.category === activeCategory) &&
-    (`${o.title} ${o.org} ${o.category}`.toLowerCase().includes(query.toLowerCase()))
-  ), [query, activeCategory])
+  const visible = useMemo(() => {
+    const terms = normalizeSearch(query).split(' ').filter(Boolean)
+    return opportunities.filter(o => {
+      const aliases = o.location.includes('Remote') ? 'virtual online' : ''
+      const haystack = normalizeSearch(`${o.title} ${o.org} ${o.category} ${o.location} ${o.paid} grades ${o.grades} ${o.time} ${o.duration} ${aliases}`)
+      return terms.every(term => haystack.includes(term))
+    })
+  }, [query])
 
   useEffect(() => {
     if (!window.location.hash) window.history.replaceState({beacon: true}, '', '#discover')
@@ -251,7 +259,7 @@ function App() {
     {page === 'saved' && <SavedPage items={opportunities.filter(o => saved.includes(o.id))} statuses={statuses} setStatuses={setStatuses} notes={notes} setNotes={setNotes} onView={id => go('detail', id)} onCompare={toggleCompare} />}
     {page === 'compare' && <ComparePage items={opportunities.filter(o => compare.includes(o.id))} onRemove={toggleCompare} onBack={() => go('discover')} onView={id => go('detail', id)} />}
 
-    {searchOpen && <SearchOverlay query={query} setQuery={setQuery} results={visible} onClose={() => setSearchOpen(false)} onView={id => {setSearchOpen(false); go('detail', id)}} />}
+    {searchOpen && <SearchOverlay query={query} setQuery={setQuery} results={visible} onClose={() => setSearchOpen(false)} onBrowseAll={() => {setQuery(''); setActiveCategory('All opportunities'); setSearchOpen(false); go('discover')}} onView={id => {setSearchOpen(false); go('detail', id)}} />}
     {filtersOpen && <FilterPanel active={activeCategory} setActive={setActiveCategory} onClose={() => setFiltersOpen(false)} />}
   </div>
 }
@@ -445,10 +453,16 @@ function ComparePage({ items, onRemove, onBack, onView }) {
   </main>
 }
 
-function SearchOverlay({ query, setQuery, results, onClose, onView }) {
-  return <div className="overlay" onMouseDown={e => e.target === e.currentTarget && onClose()}><div className="search-modal">
-    <div className="search-input"><Search/><input autoFocus value={query} onChange={e=>setQuery(e.target.value)} placeholder="Search programs, organizations, or categories"/><button onClick={onClose}><X/></button></div>
-    <div className="search-results"><p>{query ? `${results.length} RESULTS` : 'POPULAR RIGHT NOW'}</p>{results.slice(0,5).map(item=><button key={item.id} onClick={()=>onView(item.id)}><OrgLogo item={item}/><span><b>{item.title}</b><small>{item.org} · {item.category}</small></span><ArrowRight/></button>)}</div>
+function SearchOverlay({ query, setQuery, results, onClose, onBrowseAll, onView }) {
+  useEffect(() => {
+    const closeOnEscape = e => e.key === 'Escape' && onClose()
+    window.addEventListener('keydown', closeOnEscape)
+    return () => window.removeEventListener('keydown', closeOnEscape)
+  }, [onClose])
+
+  return <div className="overlay" role="dialog" aria-modal="true" aria-label="Search opportunities" onMouseDown={e => e.target === e.currentTarget && onClose()}><div className="search-modal">
+    <div className="search-input"><Search/><input autoFocus={window.matchMedia('(min-width: 721px)').matches} value={query} onChange={e=>setQuery(e.target.value)} aria-label="Search opportunities" placeholder="Search programs, organizations, locations, or categories"/>{query && <button className="clear-search" aria-label="Clear search" onClick={() => setQuery('')}><X/></button>}<button aria-label="Close search" onClick={onClose}><X/></button></div>
+    <div className="search-results"><p>{query ? `${results.length} ${results.length === 1 ? 'RESULT' : 'RESULTS'}` : 'ALL OPPORTUNITIES'}</p>{results.slice(0,5).map(item=><button key={item.id} onClick={()=>onView(item.id)}><OrgLogo item={item}/><span><b>{item.title}</b><small>{item.org} · {item.category} · {item.location}</small></span><ArrowRight/></button>)}{query && results.length === 0 && <div className="search-empty"><h3>No matching opportunities</h3><p>Try a shorter term, search by organization or location, or return to the full opportunity deck.</p><div><button onClick={() => setQuery('')}>Clear search</button><button className="primary-action" onClick={onBrowseAll}>View all opportunities</button></div></div>}</div>
   </div></div>
 }
 
