@@ -331,6 +331,7 @@ function App() {
   const [query, setQuery] = useState("");
   const [filters, setFilters] = usePersistentState("filters", emptyFilters);
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [profileOpen, setProfileOpen] = useState(false);
   const [statuses, setStatuses] = usePersistentState(
     "application-statuses",
     {},
@@ -391,7 +392,7 @@ function App() {
     window.history[method]({ beacon: true, fromBeacon: !replace }, "", hash);
     setPage(next);
     setMobileOpen(false);
-    window.scrollTo({ top: 0, behavior: "smooth" });
+    window.scrollTo({ top: 0, behavior: "auto" });
   };
   const goBack = () =>
     window.history.state?.fromBeacon
@@ -483,10 +484,15 @@ function App() {
             Saved <span className="count">{saved.length}</span>
           </button>
         </nav>
-        <button className="profile" aria-label="Open profile settings">
-          <span>GK</span>
-          <ChevronDown size={14} />
-        </button>
+      <button
+        className="profile"
+        aria-label="Open profile menu"
+        aria-expanded={profileOpen}
+        onClick={() => setProfileOpen((open) => !open)}
+      >
+        <span>GK</span>
+        <ChevronDown size={14} />
+      </button>
         <button
           className="menu-button"
           aria-label="Open navigation"
@@ -494,10 +500,17 @@ function App() {
           onClick={() => setMobileOpen(!mobileOpen)}
         >
           <Menu />
-        </button>
-      </header>
+      </button>
+      {profileOpen && (
+        <div className="profile-menu">
+          <div><b>GK</b><span>Student profile</span></div>
+          <button onClick={() => { setProfileOpen(false); go("saved"); }}>Saved opportunities <Bookmark /></button>
+          <button onClick={() => { setProfileOpen(false); go("compare"); }}>Comparison shortlist <Columns3 /></button>
+        </div>
+      )}
+    </header>
 
-      {compare.length > 0 && page !== "compare" && page !== "discover" && (
+      {compare.length > 0 && page === "saved" && (
         <button className="compare-dock" onClick={() => go("compare")}>
           <Columns3 size={17} />
           <span>Compare shortlist</span>
@@ -998,9 +1011,6 @@ function OpportunitySection({ number, title, subtitle, items, onView }) {
             <p>{subtitle}</p>
           </div>
         </div>
-        <button>
-          View all <ArrowRight />
-        </button>
       </div>
       <div className="opportunity-grid">
         {items.map((item, index) => (
@@ -1428,8 +1438,13 @@ function SearchOverlay({
 }) {
   useEffect(() => {
     const closeOnEscape = (e) => e.key === "Escape" && onClose();
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
     window.addEventListener("keydown", closeOnEscape);
-    return () => window.removeEventListener("keydown", closeOnEscape);
+    return () => {
+      document.body.style.overflow = previousOverflow;
+      window.removeEventListener("keydown", closeOnEscape);
+    };
   }, [onClose]);
 
   return (
@@ -1519,6 +1534,16 @@ function FilterPanel({ filters, setFilters, resultCount, onClear, onClose }) {
         ? current[group].filter((value) => value !== option)
         : [...current[group], option],
     }));
+  useEffect(() => {
+    const closeOnEscape = (event) => event.key === "Escape" && onClose();
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    window.addEventListener("keydown", closeOnEscape);
+    return () => {
+      document.body.style.overflow = previousOverflow;
+      window.removeEventListener("keydown", closeOnEscape);
+    };
+  }, [onClose]);
   return (
     <div
       className="filter-overlay"

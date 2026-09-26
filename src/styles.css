@@ -150,6 +150,47 @@ img {
   border: 0;
   color: white;
 }
+.profile-menu {
+  position: absolute;
+  z-index: 40;
+  top: 66px;
+  right: max(3vw, 26px);
+  width: 238px;
+  border: 1px solid #35485c;
+  background: var(--navy);
+  box-shadow: 0 18px 40px rgba(5, 15, 25, 0.25);
+  color: white;
+}
+.profile-menu > div {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  padding: 18px;
+  border-bottom: 1px solid #35485c;
+}
+.profile-menu > div span {
+  color: #9eabb7;
+  font-size: 11px;
+}
+.profile-menu > button {
+  display: flex;
+  width: 100%;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 18px;
+  border: 0;
+  border-bottom: 1px solid #263b4f;
+  background: none;
+  color: white;
+  font-size: 12px;
+  text-align: left;
+}
+.profile-menu > button:hover {
+  background: #14283b;
+}
+.profile-menu svg {
+  width: 15px;
+}
 main {
   overflow: hidden;
 }
@@ -1512,6 +1553,64 @@ textarea:focus-visible {
     grid-column: 2/4;
   }
 }
+
+@media (min-width: 721px) and (max-height: 800px) {
+  .discovery-page > .featured-block {
+    padding-top: 14px;
+    padding-bottom: 9px;
+  }
+  .discovery-page .swipe-status {
+    margin-bottom: 9px;
+  }
+  .discovery-page .hero-content {
+    padding: 24px clamp(26px, 3vw, 42px) 20px;
+  }
+  .discovery-page .org-logo {
+    width: 36px;
+    height: 36px;
+    padding: 6px;
+  }
+  .discovery-page .category {
+    margin: 15px 0 7px;
+  }
+  .discovery-page .hero-content h2 {
+    margin-bottom: 10px;
+    font-size: clamp(30px, 3vw, 39px);
+  }
+  .discovery-page .description {
+    display: -webkit-box;
+    margin-bottom: 12px;
+    overflow: hidden;
+    font-size: 13px;
+    line-height: 1.45;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+  }
+  .discovery-page .facts-grid > div {
+    padding: 8px 10px;
+  }
+  .discovery-page .facts-grid b {
+    margin-top: 2px;
+  }
+  .discovery-page .beacon-note {
+    margin: 10px 0;
+  }
+  .discovery-page .beacon-note p {
+    display: -webkit-box;
+    overflow: hidden;
+    font-size: 12px;
+    line-height: 1.35;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+  }
+  .discovery-page .hero-actions button {
+    height: 38px;
+  }
+  .discovery-page .gesture-guide {
+    padding-top: 8px;
+  }
+}
+
 @media (max-width: 720px) {
   .topbar {
     height: 65px;
@@ -1672,7 +1771,13 @@ textarea:focus-visible {
     margin-top: auto;
   }
   .discovery-page .hero-actions button {
+    position: relative;
     height: 34px;
+  }
+  .discovery-page .hero-actions button::before {
+    position: absolute;
+    inset: -5px 0;
+    content: "";
   }
   .facts-grid {
     grid-template-columns: 1fr 1fr;
