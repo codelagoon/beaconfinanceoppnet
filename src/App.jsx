@@ -21,7 +21,6 @@ import {
   RotateCcw,
   Search,
   SlidersHorizontal,
-  Sparkles,
   X,
   Zap,
 } from "lucide-react";
@@ -847,16 +846,16 @@ function Discovery({
     <main className="discovery-page">
       <section className="masthead">
         <div>
-          <p className="eyebrow">OPPORTUNITY DISCOVERY</p>
+          <p className="eyebrow">BEACON FINANCE OPPORTUNITY INDEX</p>
           <h1>
-            A sharper way to find
+            Good opportunities are hard to find.
             <br />
-            your next move.
+            We did the sorting.
           </h1>
         </div>
         <p className="mast-copy">
-          200 sourced opportunities for NYC students, including remote and
-          hybrid options. Swipe quickly, then go deep when something earns your attention.
+          Internships, programs, competitions, and research opportunities for
+          high school students. Every listing points back to an original source.
         </p>
       </section>
 
@@ -875,7 +874,7 @@ function Discovery({
       <section className="featured-block">
         <div className="swipe-status">
           <div className="section-kicker">
-            <span>01</span> Today’s curated deck
+            <span>INDEX</span> Current opportunity
           </div>
           <div className="deck-progress">
             <span>
@@ -975,7 +974,7 @@ function Discovery({
                     decoding="async"
                   />
                   <div className="image-label">
-                    <Sparkles size={14} /> BEACON FEATURED
+                    Selected by Beacon Finance
                   </div>
                 </div>
                 <div className="hero-content">
@@ -983,7 +982,7 @@ function Discovery({
                     <OrgLogo item={item} />
                     <div>
                       <span>{item.org}</span>
-                      <small>Verified organization</small>
+                      <small>Source checked {item.verified}</small>
                     </div>
                   </div>
                   <p className="category">
@@ -1087,7 +1086,7 @@ function Discovery({
       </section>
 
       <section className="signal-band">
-        <p>THE BEACON STANDARD</p>
+        <p>INDEX NOTES</p>
         <div>
           <strong>{opportunities.length}</strong>
           <span>Programs verified</span>
@@ -1101,7 +1100,7 @@ function Discovery({
           <span>Remote or hybrid</span>
         </div>
         <p className="quote">
-          “No filler. Just opportunities we’d send to a serious student.”
+          Source notes are checked against original program pages.
         </p>
       </section>
 
@@ -1576,14 +1575,13 @@ function ResourceLibrary() {
     <main className="resources-page">
       <section className="resources-hero">
         <div>
-          <p className="eyebrow">THE BEACON RESOURCE DESK</p>
-          <h1>The finance education<br />school rarely gives you.</h1>
+          <p className="eyebrow">BEACON FINANCE REFERENCE DESK</p>
+          <h1>Start with primary sources.<br />Learn the rest as you need it.</h1>
         </div>
         <div className="resource-hero-copy">
           <p>
-            A high-school-first library for learning the fundamentals, reading
-            real markets, building technical skills, and preparing for serious
-            opportunities.
+            Free material for accounting, markets, valuation, economics, Excel,
+            and recruiting—selected for usefulness, not prestige.
           </p>
           <span>
             <Check size={14} /> {financeResources.length} free resources · 12 skill areas · Curated September 2026
@@ -1606,11 +1604,11 @@ function ResourceLibrary() {
         <div className="resource-section-heading">
           <div>
             <p className="eyebrow">START HERE</p>
-            <h2>Three resources worth your time first.</h2>
+            <h2>Three places to start.</h2>
           </div>
           <p>
-            The cleanest route from curious beginner to someone who can speak
-            intelligently about finance.
+            If you’re new, start here. These three give you enough context to
+            use the rest of the library.
           </p>
         </div>
         <div className="resource-featured-list">
@@ -1660,7 +1658,7 @@ function ResourceLibrary() {
         <header className="resource-catalog-head">
           <div>
             <p className="eyebrow">FULL LIBRARY</p>
-            <h2>Free resources, carefully selected.</h2>
+            <h2>The full reference shelf.</h2>
           </div>
           <label>
             <span>Level</span>
