@@ -2910,6 +2910,11 @@ body {
   color: var(--muted);
 }
 
+.resource-hero-copy > span {
+  color: var(--ink);
+  border-top-color: var(--line);
+}
+
 .resource-search-band {
   background: var(--cream);
   border-bottom: 1px solid var(--line);
