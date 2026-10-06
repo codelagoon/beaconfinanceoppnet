@@ -21,7 +21,6 @@ import {
   RotateCcw,
   Search,
   SlidersHorizontal,
-  Sparkles,
   X,
   Zap,
 } from "lucide-react";
